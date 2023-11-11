@@ -25,7 +25,7 @@ namespace Assignment1v3.Pages
                 FullEventList = await _context.Event.ToListAsync();
                 //Event = _context.Event.Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.title }).ToList() as IEnumerable<SelectListItem>;
 
-                UserEventList = FullEventList.Where(item => item.id == 2);
+                UserEventList = FullEventList.Where(item => item.userId == "test");
             }
         }
     }
