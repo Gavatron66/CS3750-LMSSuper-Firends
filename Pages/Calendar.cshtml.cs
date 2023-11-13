@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Assignment1v3.Pages
 {
@@ -15,17 +16,19 @@ namespace Assignment1v3.Pages
             _context = context;
         }
 
-        public IList<Event> FullEventList { get; set; } = default!;
-        public IEnumerable<Event> UserEventList { get; set; } = default!;
+        public IList<Event> UserEventList { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
             if (_context.Event != null)
-            { 
-                FullEventList = await _context.Event.ToListAsync();
-                //Event = _context.Event.Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.title }).ToList() as IEnumerable<SelectListItem>;
+            {
+                // Get the currently authenticated user's email address claim
+                var userEmailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
 
-                UserEventList = FullEventList.Where(item => item.userId == "test");
+                if (userEmailClaim != null)
+                {
+                    UserEventList = await _context.Event.Where(x => x.userId.Contains(userEmailClaim.Value)).ToListAsync();
+                }
             }
         }
     }
