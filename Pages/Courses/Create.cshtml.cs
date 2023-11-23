@@ -43,10 +43,15 @@ namespace Assignment1v3.Pages.Courses
         
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int instructorID)
         {
-            //This nasty line of code grabs the logged-in user, grabs their ID, and converts it to an integer for the DB
-            int instructorID = Convert.ToInt32((User.Claims.ElementAt(3).ToString()).Remove(0, 4));
+            if(instructorID == null)
+            {
+                //This nasty line of code grabs the logged-in user, grabs their ID, and converts it to an integer for the DB
+                instructorID = Convert.ToInt32((User.Claims.ElementAt(3).ToString()).Remove(0, 4));
+
+            }
+
             Course.InstructorId = instructorID;
 
             if (!ModelState.IsValid || _context.Course == null || Course == null)
@@ -56,25 +61,57 @@ namespace Assignment1v3.Pages.Courses
 
             string dateFormat = "MM/dd/yyyy HH:mm";
 
-            var newevent = new Assignment1v3.Models.Event
+            string classDays = "";
+            for(int i = 0; i < ClassDays.Count - 1; i++)
             {
-                title = Course.CourseNumber + ": " + Course.CourseName,
-                startTime = Course.StartTime,
-                endTime = Course.EndTime,
-                //startRecur = Course.StartRecur,
-                //endRecur = Course.EndRecur,
-                //daysOfWeek = Course.ClassDays,
+                classDays += ClassDays[i] + ", ";
+            }
+            classDays += ClassDays.Last();
 
-                // Temporary until we add recur and daysOfWeek functionality to Course creation
-                startRecur = DateTime.Parse("2023-10-01 00:00:00.000"),
-                endRecur = DateTime.Parse("2023-10-31 00:00:00.000"),
-                daysOfWeek = "[1]",
-                // ----------------------------------------------------------------------------
+            Course.ClassDays = classDays;
 
-                userId = this.User.Claims.ElementAt(1).ToString(),
-                url = "/Home/InstructorDashboard",
-            };
-            _context.Event.Add(newevent);
+            if(instructorID == null)
+            {
+                var newevent = new Assignment1v3.Models.Event
+                {
+                    title = Course.CourseNumber + ": " + Course.CourseName,
+                    startTime = Course.StartTime,
+                    endTime = Course.EndTime,
+                    //startRecur = Course.StartRecur,
+                    //endRecur = Course.EndRecur,
+                    //daysOfWeek = Course.ClassDays,
+
+                    // Temporary until we add recur and daysOfWeek functionality to Course creation
+                    startRecur = DateTime.Parse("2023-10-01 00:00:00.000"),
+                    endRecur = DateTime.Parse("2023-10-31 00:00:00.000"),
+                    daysOfWeek = "[1]",
+                    // ----------------------------------------------------------------------------
+                    userId = this.User.Claims.ElementAt(1).ToString(),
+                    url = "/Home/InstructorDashboard",
+                };
+                _context.Event.Add(newevent);
+            }
+            else
+            {
+                var newevent = new Assignment1v3.Models.Event
+                {
+                    title = Course.CourseNumber + ": " + Course.CourseName,
+                    startTime = Course.StartTime,
+                    endTime = Course.EndTime,
+                    //startRecur = Course.StartRecur,
+                    //endRecur = Course.EndRecur,
+                    //daysOfWeek = Course.ClassDays,
+
+                    // Temporary until we add recur and daysOfWeek functionality to Course creation
+                    startRecur = DateTime.Parse("2023-10-01 00:00:00.000"),
+                    endRecur = DateTime.Parse("2023-10-31 00:00:00.000"),
+                    daysOfWeek = "[1]",
+                    // ----------------------------------------------------------------------------
+                    userId = instructorID.ToString(),
+                    url = "/Home/InstructorDashboard",
+                };
+                _context.Event.Add(newevent);
+            }
 
             _context.Course.Add(Course);
             await _context.SaveChangesAsync();

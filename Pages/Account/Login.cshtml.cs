@@ -1,4 +1,5 @@
 using Assignment1v3.Models;
+using Azure.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -78,6 +79,14 @@ namespace Assignment1v3.Pages.Account
     }
     public class Credential
     {
+        public Credential() { }
+
+        public Credential(string username, string password)
+        {
+            Username = username;
+            Password = password;
+        }
+
         [Required]
         [Display(Name = "User Name")]
         public string Username { get; set; }
