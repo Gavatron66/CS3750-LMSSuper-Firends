@@ -37,6 +37,7 @@
         <div class="notifications-wrapper">
             <a class="content" style="font-weight: bold; font-size: 25px;" asp-page="/Assignments/StudentCourseViewDetails" asp-route-id="@submission.AssignmentID">
                 <div id="i" class="notification-item">
+                    <h4 class="item-title">@Model.Assignment.FirstOrDefault(a => a.ID == submission.AssignmentID).name</h4>
                     <h4 class="item-title">An assignment has been graded</h4>
 
                 </div>
